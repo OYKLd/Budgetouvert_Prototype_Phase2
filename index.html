@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BudgetOuvert — Prototype Phase 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+<!-- ══ TOP BAR ══ -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <span class="logo-badge"></span>
+    BudgetOuvert
+    <span>Phase 2 · Prototype</span>
+  </div>
+  <div class="topbar-tabs">
+    <button class="tab" onclick="switchTab('agent',this)">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 1L1 4v4c0 3.3 2.3 6.4 6 7 3.7-.6 6-3.7 6-7V4L7 1z"/></svg>
+      Interface commune
+    </button>
+    <button class="tab active" onclick="switchTab('dashboard',this)">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="5" height="5" rx="1"/><rect x="8" y="1" width="5" height="5" rx="1"/><rect x="1" y="8" width="5" height="5" rx="1"/><rect x="8" y="8" width="5" height="5" rx="1"/></svg>
+      Dashboard citoyen
+    </button>
+  </div>
+  <div class="topbar-right">
+    <div>
+      <div>Réseau : <span>Polygon Amoy Testnet</span></div>
+      <div id="block-counter">Bloc #<span id="block-num">—</span></div>
+    </div>
+    <button class="wallet-btn" id="wallet-btn" onclick="connectWallet()">
+      <span class="wallet-dot"></span>
+      <span id="wallet-label">Connecter MetaMask</span>
+    </button>
+  </div>
+</header>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+
+  <!-- ══ LEFT PANEL : INTERFACE AGENT ══ -->
+  <aside class="panel panel-left" id="panel-agent" style="display:none">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Saisie — Agent comptable</div>
+        <div class="panel-sub" id="agent-commune-label">Commune d'Abobo · Trésorerie principale</div>
+      </div>
+      <div>
+        Agent : <span id="agent-addr">Non connecté</span>
+      </div>
+    </div>
+
+    <div class="form-body">
+      <!-- Type -->
+      <div class="field">
+        <label>Type de transaction</label>
+        <div class="type-toggle">
+          <button class="type-btn active-dep" id="btn-dep" onclick="setType('dep')">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 1v12M3 9l4 4 4-4"/></svg>
+            Dépense
+          </button>
+          <button class="type-btn" id="btn-rec" onclick="setType('rec')">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 13V1M3 5l4-4 4 4"/></svg>
+            Recette
+          </button>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="field">
+        <label>Description</label>
+        <input type="text" id="f-desc" placeholder="Ex : Réfection route du marché central" value="Réparation éclairage public Zone 4">
+      </div>
+
+      <!-- Montant -->
+      <div class="field">
+        <label>Montant</label>
+        <div class="amount-wrap">
+          <span class="amount-currency">FCFA</span>
+          <input type="number" id="f-montant" placeholder="0" value="4750000">
+        </div>
+      </div>
+
+      <!-- Cat + Date -->
+      <div class="field-row">
+        <div class="field">
+          <label>Catégorie</label>
+          <select id="f-cat">
+            <option value="Infrastructure">Infrastructure</option>
+            <option value="Education">Éducation</option>
+            <option value="Sante">Santé</option>
+            <option value="Administration">Administration</option>
+            <option value="Marches">Marchés</option>
+            <option value="Environnement">Environnement</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="f-date">
+        </div>
+      </div>
+
+      <!-- Ref + Prestataire -->
+      <div class="field-row">
+        <div class="field">
+          <label>Réf. marché</label>
+          <input type="text" id="f-ref" placeholder="BC-2026-XXX" value="BC-2026-112">
+        </div>
+        <div class="field">
+          <label>Prestataire</label>
+          <input type="text" id="f-prest" placeholder="Nom entreprise" value="SOTRA-CI Énergie">
+        </div>
+      </div>
+
+      <!-- Observations -->
+      <div class="field">
+        <label>Observations</label>
+        <textarea id="f-obs" placeholder="Notes complémentaires...">Remplacement 48 lampadaires défectueux, secteur résidentiel Zone 4.</textarea>
+      </div>
+    </div>
+
+    <!-- TX Result -->
+    <div class="tx-result" id="tx-result">
+      <div class="tx-result-title">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 7l3.5 3.5L12 3"/></svg>
+        Transaction enregistrée sur Polygon
+      </div>
+      <div class="tx-hash" id="tx-hash-display"></div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-zone">
+      <div class="chain-info">
+        <div class="chain-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="var(--lime)" stroke-width="1.5"><rect x="2" y="6" width="4" height="4" rx="1"/><rect x="14" y="6" width="4" height="4" rx="1"/><rect x="8" y="3" width="4" height="4" rx="1"/><rect x="8" y="13" width="4" height="4" rx="1"/><path d="M6 8h2M12 8h2M10 7v2M10 13v-2"/></svg>
+        </div>
+        <div class="chain-text">
+          <strong>Polygon Amoy Testnet</strong>
+          <p>Chaque validation grave la transaction de façon permanente et publique. Frais ≈ 0 MATIC testnet. Visible immédiatement par tous les citoyens.</p>
+        </div>
+      </div>
+      <button class="btn-submit" id="btn-submit" onclick="submitTransaction()">
+        <div class="spinner" id="submit-spinner"></div>
+        <span id="submit-label">Valider sur la blockchain</span>
+        <svg id="submit-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L5.5 8.5M12 2H8M12 2V6"/><path d="M6 3H2.5A1 1 0 001.5 4v8.5a1 1 0 001 1H11a1 1 0 001-1V9"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══ RIGHT PANEL : DASHBOARD ══ -->
+  <main class="panel panel-right" id="panel-dashboard">
+    <div class="dash-body">
+
+      <!-- Commune selector -->
+      <div class="commune-bar fade-in">
+        <div style="display:flex;align-items:center;gap:10px">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" stroke-width="1.5"><circle cx="8" cy="7" r="3"/><path d="M2.5 14c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/></svg>
+          <select id="commune-select" onchange="updateCommune(this.value)">
+            <option value="abobo">Commune d'Abobo</option>
+            <option value="yopougon">Commune de Yopougon</option>
+            <option value="bouake">Commune de Bouaké</option>
+            <option value="yamoussoukro">Commune de Yamoussoukro</option>
+            <option value="cocody">Commune de Cocody</option>
+          </select>
+        </div>
+        <div class="live-badge">
+          <span class="live-dot"></span>
+          Blockchain en direct
+        </div>
+      </div>
+
+      <!-- KPI Grid -->
+      <div class="kpi-grid fade-in">
+        <div class="kpi-card">
+          <div class="kpi-lbl">Budget voté</div>
+          <div class="kpi-val" id="kpi-budget">4,2 Mds</div>
+          <div class="kpi-sub neu">FCFA · Exercice 2026</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-lbl">Dépensé</div>
+          <div class="kpi-val" id="kpi-dep">1,84 Mds</div>
+          <div class="kpi-sub down" id="kpi-dep-pct">43,8 % du budget</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-lbl">Recettes perçues</div>
+          <div class="kpi-val" id="kpi-rec">2,10 Mds</div>
+          <div class="kpi-sub up" id="kpi-rec-pct">↑ 50,0 % obj.</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-lbl">Transactions</div>
+          <div class="kpi-val" id="kpi-tx">247</div>
+          <div class="kpi-sub up">
+            <span class="live-dot" style="display:inline-block;width:5px;height:5px;margin-right:4px"></span>
+            En direct
+          </div>
+        </div>
+      </div>
+
+      <!-- Budget progress -->
+      <div class="budget-progress fade-in">
+        <div class="bp-header">
+          <span class="bp-title">Exécution budgétaire 2026</span>
+          <span class="bp-pct" id="bp-pct">43,8 %</span>
+        </div>
+        <div class="bp-bar">
+          <div class="bp-fill" id="bp-fill" style="width:43.8%"></div>
+        </div>
+        <div class="bp-labels">
+          <span>0 FCFA</span>
+          <span id="bp-mid">2,1 Mds</span>
+          <span id="bp-max">4,2 Mds</span>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="charts-row fade-in">
+        <!-- Évolution mensuelle -->
+        <div class="chart-card">
+          <div class="chart-card-title">Évolution mensuelle des dépenses</div>
+          <div class="chart-wrap">
+            <canvas id="chart-evolution"></canvas>
+          </div>
+        </div>
+        <!-- Top dépenses par catégorie -->
+        <div class="chart-card">
+          <div class="chart-card-title">Top dépenses par catégorie</div>
+          <div class="top-dep" id="top-dep-list" style="padding-top:8px"></div>
+        </div>
+      </div>
+
+      <!-- Historique filtrable -->
+      <div class="hist-card fade-in">
+        <div class="hist-header">
+          <div class="hist-title">Historique des transactions</div>
+          <div class="filter-bar">
+            <button class="filter-chip active" onclick="filterTx('all',this)">Tout</button>
+            <button class="filter-chip" onclick="filterTx('dep',this)">Dépenses</button>
+            <button class="filter-chip" onclick="filterTx('rec',this)">Recettes</button>
+            <button class="filter-chip" onclick="filterTx('Infrastructure',this)">Infra</button>
+            <button class="filter-chip" onclick="filterTx('Education',this)">Éducation</button>
+          </div>
+        </div>
+        <table class="hist-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Catégorie</th>
+              <th>Type</th>
+              <th style="text-align:right">Montant FCFA</th>
+              <th>Hash blockchain</th>
+            </tr>
+          </thead>
+          <tbody id="tx-tbody"></tbody>
+        </table>
+      </div>
+
+    </div><!-- /dash-body -->
+  </main>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══ LOADER ══ -->
+<div class="tx-loader" id="tx-loader">
+  <div class="loader-ring"></div>
+  <div class="loader-text">Validation en cours sur<br><strong style="color:var(--lime)">Polygon Amoy Testnet</strong></div>
+  <div class="loader-step" id="loader-step">Signature de la transaction…</div>
+</div>
+
+<!-- ══ TOASTS ══ -->
+<div class="toast-container" id="toast-container"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

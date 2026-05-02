@@ -393,6 +393,187 @@ body::before{
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 
+/* ══ RESPONSIVE DESIGN ═════════════════════════════════════ */
+
+/* Tablettes */
+@media(max-width:1024px){
+  .panel-left{width:380px}
+  .topbar{padding:12px 20px}
+  .topbar-logo{font-size:16px}
+  .tab{padding:6px 14px;font-size:12px}
+  .wallet-btn{padding:6px 12px;font-size:11px}
+}
+
+/* Mobile paysage */
+@media(max-width:768px){
+  .main{flex-direction:column}
+  .panel-left{
+    width:100%;
+    border-right:none;
+    border-bottom:1px solid var(--border);
+    height:50vh;
+  }
+  .panel-right{height:50vh}
+  .topbar{
+    padding:10px 16px;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .topbar-logo{
+    font-size:14px;
+    order:1;
+    flex:1;
+  }
+  .topbar-tabs{
+    order:3;
+    width:100%;
+    justify-content:center;
+    margin-top:4px;
+  }
+  .topbar-right{
+    order:2;
+    gap:8px;
+  }
+  .wallet-btn{
+    padding:5px 10px;
+    font-size:10px;
+  }
+  .wallet-btn span:last-child{display:none}
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .kpi-card{padding:16px}
+  .kpi-val{font-size:24px}
+  .charts-row{grid-template-columns:1fr;gap:16px}
+  .hist-table{font-size:11px}
+  .hist-table th{padding:6px 8px;font-size:9px}
+  .hist-table td{padding:8px;font-size:11px}
+  .hash-cell{font-size:9px}
+  .filter-chip{padding:3px 8px;font-size:10px}
+}
+
+/* Mobile portrait */
+@media(max-width:480px){
+  html{font-size:14px}
+  .topbar{
+    padding:8px 12px;
+    min-height:50px;
+  }
+  .topbar-logo{
+    font-size:13px;
+    gap:6px;
+  }
+  .logo-badge{width:6px;height:6px}
+  .topbar-logo span:last-child{display:none}
+  .tab{
+    padding:5px 10px;
+    font-size:11px;
+  }
+  .tab svg{width:11px;height:11px}
+  .wallet-btn{
+    padding:4px 8px;
+    font-size:9px;
+    min-width:auto;
+  }
+  .wallet-btn svg{width:12px;height:12px}
+  .panel-left{height:45vh}
+  .panel-right{height:55vh}
+  .panel-header{padding:16px 12px 12px}
+  .panel-title{font-size:14px}
+  .panel-sub{font-size:11px}
+  .form-body{padding:16px 12px}
+  .field{margin-bottom:12px}
+  .field label{font-size:12px;margin-bottom:4px}
+  .field input,.field select,.field textarea{
+    font-size:13px;
+    padding:8px 10px;
+  }
+  .field-row{flex-direction:column;gap:12px}
+  .type-btn{padding:8px 12px;font-size:12px}
+  .type-btn svg{width:12px;height:12px}
+  .btn-submit{
+    padding:12px 16px;
+    font-size:13px;
+  }
+  .chain-info{padding:12px}
+  .chain-text p{font-size:11px}
+  .dash-body{padding:12px}
+  .commune-bar{padding:8px 12px;margin:0 0 16px}
+  .commune-bar select{font-size:12px;padding:4px 8px}
+  .kpi-grid{
+    grid-template-columns:1fr;
+    gap:10px;
+    margin:0 0 16px;
+  }
+  .kpi-card{padding:12px}
+  .kpi-lbl{font-size:11px}
+  .kpi-val{font-size:20px}
+  .kpi-sub{font-size:10px}
+  .budget-progress{padding:12px;margin:0 0 16px}
+  .bp-title{font-size:12px}
+  .bp-pct{font-size:12px}
+  .chart-card{padding:12px}
+  .chart-card-title{font-size:12px;margin-bottom:8px}
+  .hist-card{margin:0}
+  .hist-header{padding:10px 12px 8px}
+  .hist-title{font-size:11px}
+  .filter-bar{gap:2px}
+  .filter-chip{
+    padding:2px 6px;
+    font-size:9px;
+  }
+  .hist-table{
+    font-size:10px;
+  }
+  .hist-table th{
+    padding:4px 6px;
+    font-size:8px;
+    letter-spacing:0.3px;
+  }
+  .hist-table td{
+    padding:6px;
+    font-size:10px;
+  }
+  .hist-table th:nth-child(5),
+  .hist-table td:nth-child(5){
+    text-align:right;
+  }
+  .hist-table th:nth-child(6),
+  .hist-table td:nth-child(6){
+    display:none;
+  }
+  .cat-tag{
+    font-size:9px;
+    padding:1px 4px;
+  }
+  .badge-dep,.badge-rec{
+    font-size:9px;
+    padding:2px 4px;
+  }
+  .hash-cell{font-size:8px}
+  .toast-container{
+    bottom:12px;
+    right:12px;
+    left:12px;
+  }
+  .toast{
+    max-width:none;
+    padding:10px 12px;
+  }
+  .tx-loader{
+    padding:20px;
+  }
+  .loader-text{font-size:12px}
+  .loader-step{font-size:10px}
+}
+
+/* Petit mobile */
+@media(max-width:360px){
+  .topbar-logo{font-size:12px}
+  .tab{padding:4px 8px;font-size:10px}
+  .kpi-val{font-size:18px}
+  .bp-title{font-size:11px}
+  .chart-card-title{font-size:11px}
+}
+
 /* ══ RESPONSIVE FALLBACK ════════════════════════════════════ */
 @media(max-width:1100px){
   .kpi-grid{grid-template-columns:1fr 1fr}

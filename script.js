@@ -139,15 +139,17 @@ async function submitTransaction() {
 
     document.getElementById("loader-step").textContent = "Envoi sur Polygon Amoy…";
 
-    // Alternative: utiliser une adresse qui n'est pas votre wallet
-    // pour éviter la restriction MetaMask sur les données
-    const recipientAddress = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"; // Vitalik's address (exemple)
+    const contractAddress = "0x77ab0b9406ec99fd341f1a356c581a85cc822917";
     
-    const tx = await signer.sendTransaction({
-      to: recipientAddress,
-      value: 0n,
-      data: dataHex,
-    });
+    const abi = [
+      "function enregistrer(string memory data) public",
+      "event TransactionEnregistree(address indexed sender, string data, uint256 timestamp)"
+    ];
+
+    const contract = new ethers.Contract(contractAddress, abi, signer);
+
+    const tx = await contract.enregistrer(payload);
+    await tx.wait();
 
     document.getElementById("loader-step").textContent = "En attente de confirmation…";
     const receipt = await tx.wait(1);

@@ -36,6 +36,11 @@
       <div>Réseau : <span>Polygon Amoy Testnet</span></div>
       <div id="block-counter">Bloc #<span id="block-num">—</span></div>
     </div>
+    <!-- Bouton caché pour mode simulation - accessible via console -->
+    <button class="wallet-btn" id="simulation-btn" onclick="toggleSimulation()" style="display:none">
+      <span class="wallet-dot"></span>
+      <span>Mode Simulation</span>
+    </button>
     <button class="wallet-btn" id="wallet-btn" onclick="connectWallet()">
       <span class="wallet-dot"></span>
       <span id="wallet-label">Connecter MetaMask</span>

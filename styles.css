@@ -78,8 +78,10 @@ body::before{
 }
 .wallet-btn:hover{border-color:var(--lime-dim);color:var(--lime)}
 .wallet-btn.connected{border-color:var(--lime-dim);color:var(--lime)}
+.wallet-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(200,168,75,.1)}
 .wallet-dot{width:6px;height:6px;border-radius:50%;background:var(--muted)}
 .wallet-btn.connected .wallet-dot{background:var(--lime);animation:pulse-dot 2s infinite}
+.sim-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse-dot 2s infinite}
 
 /* ══ MAIN LAYOUT ═══════════════════════════════════════════ */
 .main{flex:1;display:flex;gap:0}

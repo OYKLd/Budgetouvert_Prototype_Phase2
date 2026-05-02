@@ -139,8 +139,12 @@ async function submitTransaction() {
 
     document.getElementById("loader-step").textContent = "Envoi sur Polygon Amoy…";
 
+    // Alternative: utiliser une adresse qui n'est pas votre wallet
+    // pour éviter la restriction MetaMask sur les données
+    const recipientAddress = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"; // Vitalik's address (exemple)
+    
     const tx = await signer.sendTransaction({
-      to: walletAddress, // self-transaction — économique en gas
+      to: recipientAddress,
       value: 0n,
       data: dataHex,
     });
